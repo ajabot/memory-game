@@ -5,22 +5,26 @@ from gpiozero import Button
 import time
 import random
 
-red_led = LED(5) #red
-green_led = LED(6) #green
-yellow_led = LED(13) #yellow
-blue_led = LED(19) #blue
+red_led = LED(5)
+green_led = LED(6)
+yellow_led = LED(13)
+blue_led = LED(19)
+success_led = LED(22)
+error_led = LED(27)
 
-red_button = Button(21, False) #red
-green_button = Button(20, False) #green
-yellow_button = Button(16, False) #yellow
-blue_button = Button(12, False) #blue
+red_button = Button(21, False)
+green_button = Button(20, False)
+yellow_button = Button(16, False)
+blue_button = Button(12, False)
 
 print("Memory game")
 leds_out = {
     "r": red_led,
     "g": green_led,
     "y": yellow_led,
-    "b": blue_led
+    "b": blue_led,
+    "success": success_led,
+    "error": error_led
 }
 
 leds_choices = 'rgyb'
@@ -58,12 +62,14 @@ def check_user_input():
     for index, letter in enumerate(user_chain):
         if letter != memory_chain[index]:
             #if there is an error, the game is over
+            flash_led("error")
             user_input = False
             over = True
     
     if len(user_chain) == len(memory_chain):
         #if the input is the same length as the memory chain
         # then the turn is over 
+        flash_led("success")
         user_input = False
 
 def input_button(button):
@@ -127,6 +133,6 @@ while not over:
     #buttons are "deactivated" to avoid unwanted input (sometimes from turning on led) when it's computer turn 
     deactivate_buttons()
     level += 1
-    memory_chain.join(random.choice(leds_choices))
+    memory_chain += random.choice(leds_choices)
 
 print("Game over")
