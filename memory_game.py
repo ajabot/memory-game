@@ -108,6 +108,24 @@ def deactivate_buttons():
     yellow_button.when_released = None
     blue_button.when_released = None
 
+def increase_memory_chain():
+    global memory_chain
+    global leds_choices
+
+    last_led = memory_chain[-1]
+    second_to_last_led = memory_chain[-2:-1]
+    led_ok = False
+
+    while not led_ok:
+        new_led = random.choice(leds_choices)
+        #Avoid to have more than twice the same led in a row
+        if last_led != second_to_last_led:
+            led_ok = True
+        elif new_led != last_led:
+            led_ok = True
+
+    memory_chain += new_led
+
 user_input = False
 over = False
 level = 1
@@ -127,12 +145,13 @@ while not over:
         if now - user_timer >= 10:
             print("End Turn")
             user_input = False
+            over = True
         #little break to avoid issue with input
         time.sleep(0.1)
     print(user_chain)
     #buttons are "deactivated" to avoid unwanted input (sometimes from turning on led) when it's computer turn 
     deactivate_buttons()
     level += 1
-    memory_chain += random.choice(leds_choices)
+    increase_memory_chain()
 
 print("Game over")
